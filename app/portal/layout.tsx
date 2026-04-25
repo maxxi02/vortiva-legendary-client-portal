@@ -1,5 +1,4 @@
 import { headers, cookies } from "next/headers"
-import { redirect } from "next/navigation"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/AppSidebar"
 import { DashboardHeader } from "@/components/DashboardHeader"
@@ -16,7 +15,8 @@ export default async function PortalLayout({
   const role = headersList.get("x-user-role") ?? ""
   const pathname = headersList.get("x-pathname") ?? ""
 
-  if (!role) redirect("/?session=expired")
+  // If no role and no token, proxy would have already blocked this request.
+  // Don't redirect here — it causes loops when backend is slow.
 
   // Find the nav item matching the current path and check role access
   const matchedItem = navConfig.find(item => pathname.startsWith(item.href))
