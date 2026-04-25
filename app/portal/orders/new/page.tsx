@@ -20,9 +20,10 @@ export default function NewOrderPage() {
   const [error, setError] = useState("")
 
   useEffect(() => {
+    const safe = (p: Promise<Response>) => p.then(r => r.ok ? r.json() : []).then(d => Array.isArray(d) ? d : []).catch(() => [])
     Promise.all([
-      fetch("/api/v1/restaurant/tables", { credentials: "include" }).then(r => r.json()),
-      fetch("/api/v1/restaurant/menu/items", { credentials: "include" }).then(r => r.json()),
+      safe(fetch("/api/v1/restaurant/tables", { credentials: "include" })),
+      safe(fetch("/api/v1/restaurant/menu/items", { credentials: "include" })),
     ]).then(([t, m]) => {
       setTables(t)
       setMenuItems(m)

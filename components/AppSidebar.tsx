@@ -44,7 +44,7 @@ export function AppSidebar({ role, ...props }: Props & React.ComponentProps<type
       .then(d => {
         if (!d) return
         setUser({ full_name: d.full_name, email: d.email, avatar_url: d.avatar_url })
-        if (d.tenant_name) setTenantName(d.tenant_name)
+        if (d.tenant?.name) setTenantName(d.tenant.name)
       })
       .catch(() => {})
   }, [])
