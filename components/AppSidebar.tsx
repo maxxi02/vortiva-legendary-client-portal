@@ -35,6 +35,7 @@ export function AppSidebar({ role, ...props }: Props & React.ComponentProps<type
   const pathname = usePathname()
   const router = useRouter()
   const [logoutOpen, setLogoutOpen] = React.useState(false)
+  const [loggingOut, setLoggingOut] = React.useState(false)
   const [user, setUser] = React.useState<{ full_name: string; email: string; avatar_url?: string } | null>(null)
   const [tenantName, setTenantName] = React.useState("Vortiva")
 
@@ -52,6 +53,7 @@ export function AppSidebar({ role, ...props }: Props & React.ComponentProps<type
   const navItems = navConfig.filter(item => item.roles.includes(role as UserRole))
 
   async function handleLogout() {
+    setLoggingOut(true)
     await fetch("/api/v1/auth/logout/cookie", { method: "POST", credentials: "include" }).catch(() => {})
     router.push("/")
   }
@@ -145,7 +147,10 @@ export function AppSidebar({ role, ...props }: Props & React.ComponentProps<type
             <p className="text-sm text-muted-foreground">Are you sure you want to log out of your session?</p>
             <div className="flex gap-2">
               <button onClick={() => setLogoutOpen(false)} className="flex-1 rounded-md border border-border px-3 py-2 text-sm hover:bg-accent transition-colors">Cancel</button>
-              <button onClick={handleLogout} className="flex-1 rounded-md bg-destructive px-3 py-2 text-sm font-medium text-destructive-foreground hover:opacity-90 transition-opacity">Log out</button>
+              <button onClick={handleLogout} disabled={loggingOut} className="flex-1 rounded-md bg-destructive px-3 py-2 text-sm font-medium text-destructive-foreground hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                {loggingOut && <span className="size-3.5 rounded-full border-2 border-destructive-foreground/40 border-t-destructive-foreground animate-spin" />}
+                {loggingOut ? "Logging out…" : "Log out"}
+              </button>
             </div>
           </div>
         </div>
