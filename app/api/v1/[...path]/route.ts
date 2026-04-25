@@ -15,6 +15,7 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ path: s
     body: ["GET", "HEAD"].includes(req.method) ? undefined : req.body,
     duplex: "half",
     credentials: "include",
+    redirect: "follow",
   } as RequestInit)
 
   const resHeaders = new Headers(res.headers)

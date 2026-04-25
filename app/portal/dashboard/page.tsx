@@ -78,6 +78,11 @@ export default function DashboardPage() {
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+  const [today, setToday] = useState("")
+
+  useEffect(() => {
+    setToday(new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" }))
+  }, [])
 
   useEffect(() => {
     Promise.all([
@@ -108,7 +113,7 @@ export default function DashboardPage() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          {new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+          {today}
         </p>
       </div>
 
