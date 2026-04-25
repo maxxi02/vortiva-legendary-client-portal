@@ -140,7 +140,7 @@ export default function AnalyticsPage() {
                   width={48}
                 />
                 <Tooltip
-                  formatter={(v: number) => [fmt(v), "Revenue"]}
+                  formatter={(v) => [fmt(Number(v ?? 0)), "Revenue"]}
                   contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 6, fontSize: 12 }}
                 />
                 <Line type="monotone" dataKey="total" stroke="var(--primary)" strokeWidth={2} dot={false} />
@@ -160,7 +160,7 @@ export default function AnalyticsPage() {
                     <XAxis type="number" tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} tickLine={false} axisLine={false} tickFormatter={v => `₱${(v / 1000).toFixed(0)}k`} />
                     <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} tickLine={false} axisLine={false} width={90} />
                     <Tooltip
-                      formatter={(v: number) => [fmt(v), "Revenue"]}
+                      formatter={(v) => [fmt(Number(v ?? 0)), "Revenue"]}
                       contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 6, fontSize: 12 }}
                     />
                     <Bar dataKey="revenue" fill="var(--primary)" radius={[0, 4, 4, 0]} />

@@ -273,7 +273,7 @@ export default function SettingsPage() {
     { id: "tax",           label: "Tax",           icon: <Receipt className="size-3.5" />, adminOnly: true },
     { id: "devices",       label: "Devices",       icon: <Monitor className="size-3.5" />, adminOnly: true },
     { id: "audit",         label: "Audit Log",     icon: <ScrollText className="size-3.5" />, adminOnly: true },
-  ].filter(t => !t.adminOnly || isAdmin)
+  ].filter(t => !t.adminOnly || isAdmin) as { id: Tab; label: string; icon: React.ReactNode; adminOnly?: boolean }[] as { id: Tab; label: string; icon: React.ReactNode; adminOnly?: boolean }[]
 
   return (
     <div className="max-w-2xl space-y-6">
