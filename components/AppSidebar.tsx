@@ -36,11 +36,16 @@ export function AppSidebar({ role, ...props }: Props & React.ComponentProps<type
   const router = useRouter()
   const [logoutOpen, setLogoutOpen] = React.useState(false)
   const [user, setUser] = React.useState<{ full_name: string; email: string; avatar_url?: string } | null>(null)
+  const [tenantName, setTenantName] = React.useState("Vortiva")
 
   React.useEffect(() => {
     fetch("/api/v1/auth/me", { credentials: "include" })
       .then(r => r.ok ? r.json() : null)
-      .then(d => d && setUser({ full_name: d.full_name, email: d.email, avatar_url: d.avatar_url }))
+      .then(d => {
+        if (!d) return
+        setUser({ full_name: d.full_name, email: d.email, avatar_url: d.avatar_url })
+        if (d.tenant_name) setTenantName(d.tenant_name)
+      })
       .catch(() => {})
   }, [])
 
@@ -62,7 +67,7 @@ export function AppSidebar({ role, ...props }: Props & React.ComponentProps<type
                   <Store className="size-4" />
                 </div>
                 <div className="flex flex-col leading-none">
-                  <span className="font-semibold text-sm">Vortiva</span>
+                  <span className="font-semibold text-sm">{tenantName}</span>
                   <span className="text-xs text-muted-foreground">{ROLE_LABELS[role] ?? role}</span>
                 </div>
               </SidebarMenuButton>
