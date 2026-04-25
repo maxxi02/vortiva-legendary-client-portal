@@ -30,8 +30,16 @@ export async function proxy(request: NextRequest) {
   const isPortal = pathname.startsWith("/portal")
   const accessToken = request.cookies.get("access_token")?.value
 
-  // No token → block portal, allow public
-  if (!accessToken) {
+  // In cross-origin dev mode the access_token cookie may not be present
+  // (set by onrender.com, not localhost). Fall back to user-info cookie
+  // which is set same-origin by the login page.
+  const userInfoRaw = request.cookies.get("user-info")?.value
+  const userInfo = userInfoRaw ? (() => { try { return JSON.parse(decodeURIComponent(userInfoRaw)) } catch { return null } })() : null
+
+  const hasSession = !!accessToken || !!userInfo?.role
+
+  // No session → block portal, allow public
+  if (!hasSession) {
     if (isPortal) {
       const url = new URL("/", request.url)
       url.searchParams.set("callbackUrl", pathname)
@@ -41,14 +49,14 @@ export async function proxy(request: NextRequest) {
   }
 
   // Expired token → clear and redirect to login
-  if (isExpired(accessToken)) {
+  if (accessToken && isExpired(accessToken)) {
     return clearSession(NextResponse.redirect(new URL("/", request.url)))
   }
 
-  // Decode role directly from JWT — no backend call needed
-  const payload = decodeJWTPayload(accessToken)
-  const role = (payload?.role as string) ?? ""
-  const userId = (payload?.sub as string) ?? ""
+  // Decode role — from JWT if available, else from user-info cookie
+  const payload = accessToken ? decodeJWTPayload(accessToken) : null
+  const role = (payload?.role as string) ?? (userInfo?.role as string) ?? ""
+  const userId = (payload?.sub as string) ?? (userInfo?.id as string) ?? ""
 
   // Already logged in → skip public pages
   if (isPublic && role) {
