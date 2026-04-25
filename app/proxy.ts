@@ -77,8 +77,8 @@ export async function proxy(request: NextRequest) {
     } catch { /* backend unreachable — fail open */ }
   }
 
-  // Already logged in → skip public pages
-  if (isPublic && role) {
+  // Already logged in → skip public pages (but not if session=expired to avoid loop)
+  if (isPublic && role && !request.nextUrl.searchParams.has("session")) {
     const dest = role === "super_admin" ? "/portal/tenants" : "/portal/dashboard"
     return NextResponse.redirect(new URL(dest, request.url))
   }

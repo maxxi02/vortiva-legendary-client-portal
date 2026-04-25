@@ -11,13 +11,7 @@ export default function LoginPage() {
   const [form, setForm] = useState({ email: "", password: "" })
 
   useEffect(() => {
-    fetch("/api/v1/auth/me", { credentials: "include" })
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        if (!data) return
-        window.location.href = data.role === "super_admin" ? "/portal/tenants" : "/portal/dashboard"
-      })
-      .catch(() => {})
+    // Role redirect is handled by proxy — no client-side redirect needed
   }, [])
 
   async function handleSubmit(e: React.FormEvent) {

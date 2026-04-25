@@ -16,7 +16,7 @@ export default async function PortalLayout({
   const role = headersList.get("x-user-role") ?? ""
   const pathname = headersList.get("x-pathname") ?? ""
 
-  if (!role) redirect("/")
+  if (!role) redirect("/?session=expired")
 
   // Find the nav item matching the current path and check role access
   const matchedItem = navConfig.find(item => pathname.startsWith(item.href))
