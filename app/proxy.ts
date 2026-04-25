@@ -29,6 +29,10 @@ export async function proxy(request: NextRequest) {
     const cached = request.cookies.get("user-info")?.value
     let role = ""
     try { role = cached ? (JSON.parse(cached).role ?? "") : "" } catch { /* ignore */ }
+    if (!role) {
+      // No cached role yet — let the login page load; portal proxy will cache it on first portal visit
+      return NextResponse.next()
+    }
     const dest = role === "super_admin" ? "/portal/tenants" : "/portal/dashboard"
     return NextResponse.redirect(new URL(dest, request.url))
   }
@@ -88,13 +92,15 @@ export async function proxy(request: NextRequest) {
             maxAge: 3600,
           })
           return response
-        } else {
+        } else if (meRes.status === 401) {
+          // Token rejected by backend → force logout
           const res = NextResponse.redirect(new URL("/", request.url))
           res.cookies.delete("access_token")
           res.cookies.delete("refresh_token")
           res.cookies.delete("user-info")
           return res
         }
+        // Any other error (503, timeout, etc.) → let through without role
       } catch {
         // Backend unreachable — let through
       }
