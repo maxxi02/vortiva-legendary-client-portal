@@ -123,7 +123,7 @@ export default function TenantsPage() {
                   <span className="font-medium text-sm truncate">{t.name}</span>
                   <Badge active={t.status === "active"} />
                 </div>
-                <p className="text-xs text-muted-foreground mt-0.5 truncate">{t.owner.email}</p>
+                <p className="text-xs text-muted-foreground mt-0.5 truncate">{t.owner?.email}</p>
                 {t.business_type && (
                   <div className="mt-0.5"><BizTypeBadge value={t.business_type} /></div>
                 )}
