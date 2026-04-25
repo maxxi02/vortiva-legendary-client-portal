@@ -140,14 +140,31 @@ export function AppSidebar({ role, ...props }: Props & React.ComponentProps<type
 
       {/* Logout confirmation dialog */}
       {logoutOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setLogoutOpen(false)} />
-          <div className="relative bg-background rounded-lg border border-border shadow-xl w-full max-w-xs p-5 space-y-4">
-            <p className="font-semibold">Log out?</p>
-            <p className="text-sm text-muted-foreground">Are you sure you want to log out of your session?</p>
-            <div className="flex gap-2">
-              <button onClick={() => setLogoutOpen(false)} className="flex-1 rounded-md border border-border px-3 py-2 text-sm hover:bg-accent transition-colors">Cancel</button>
-              <button onClick={handleLogout} disabled={loggingOut} className="flex-1 rounded-md bg-destructive px-3 py-2 text-sm font-medium text-destructive-foreground hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="logout-title"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in-fade"
+        >
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => !loggingOut && setLogoutOpen(false)} />
+          <div className="relative bg-background rounded-xl border border-border shadow-2xl w-full max-w-xs p-6 space-y-4 animate-dialog-in">
+            <div className="space-y-1">
+              <p id="logout-title" className="font-semibold text-base">Log out?</p>
+              <p className="text-sm text-muted-foreground">Are you sure you want to log out of your session?</p>
+            </div>
+            <div className="flex gap-2 pt-1">
+              <button
+                onClick={() => setLogoutOpen(false)}
+                disabled={loggingOut}
+                className="flex-1 rounded-lg border border-border px-3 py-2 text-sm font-medium hover:bg-muted transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleLogout}
+                disabled={loggingOut}
+                className="flex-1 rounded-lg bg-destructive px-3 py-2 text-sm font-medium text-destructive-foreground hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
                 {loggingOut && <span className="size-3.5 rounded-full border-2 border-destructive-foreground/40 border-t-destructive-foreground animate-spin" />}
                 {loggingOut ? "Logging out…" : "Log out"}
               </button>

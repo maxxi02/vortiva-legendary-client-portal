@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { X } from "lucide-react"
+import { X, Clock } from "lucide-react"
 
 export function TrialBanner({ daysLeft }: { daysLeft: number }) {
   const [dismissed, setDismissed] = useState(false)
@@ -11,19 +11,21 @@ export function TrialBanner({ daysLeft }: { daysLeft: number }) {
 
   return (
     <div
-      className={`flex items-center justify-between gap-4 px-4 py-2.5 text-sm ${
+      className={[
+        "flex items-center justify-between gap-4 px-4 py-2.5 text-sm border-b",
         urgent
-          ? "bg-destructive/10 text-destructive border-b border-destructive/20"
-          : "bg-amber-50 text-amber-800 border-b border-amber-200 dark:bg-amber-950/30 dark:text-amber-300 dark:border-amber-800/40"
-      }`}
+          ? "bg-destructive/10 text-destructive border-destructive/20"
+          : "bg-primary/8 text-primary border-primary/15",
+      ].join(" ")}
     >
-      <span>
+      <span className="flex items-center gap-2">
+        <Clock className="size-3.5 shrink-0 opacity-70" />
         {daysLeft === 0
           ? "Your trial expires today."
           : `Your trial expires in ${daysLeft} day${daysLeft === 1 ? "" : "s"}.`}{" "}
         <a
           href="/portal/settings?tab=billing"
-          className="font-medium underline underline-offset-2 hover:opacity-80 transition-opacity"
+          className="font-semibold underline underline-offset-2 hover:opacity-75 transition-opacity"
         >
           Upgrade now →
         </a>
@@ -31,7 +33,7 @@ export function TrialBanner({ daysLeft }: { daysLeft: number }) {
       <button
         onClick={() => setDismissed(true)}
         aria-label="Dismiss trial banner"
-        className="shrink-0 opacity-60 hover:opacity-100 transition-opacity"
+        className="shrink-0 opacity-50 hover:opacity-100 transition-opacity"
       >
         <X className="h-4 w-4" />
       </button>

@@ -95,7 +95,7 @@ export function DashboardHeader() {
             {branchOpen && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setBranchOpen(false)} />
-                <div className="absolute right-0 top-full mt-1 z-50 w-44 rounded-lg border border-border bg-background shadow-lg py-1">
+                <div className="absolute right-0 top-full mt-1.5 z-50 w-44 rounded-xl border border-border bg-background shadow-xl py-1 animate-in-scale">
                   {branches.map(b => (
                     <button
                       key={b.id}
@@ -123,15 +123,17 @@ export function DashboardHeader() {
           >
             <Bell className="size-4" />
             {unread > 0 && (
-              <span className="absolute top-1 right-1 size-2 rounded-full bg-destructive" />
+              <span className="absolute -top-0.5 -right-0.5 min-w-[1.1rem] h-[1.1rem] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-semibold leading-none flex items-center justify-center">
+                {unread > 9 ? "9+" : unread}
+              </span>
             )}
           </button>
           {notifOpen && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setNotifOpen(false)} />
-              <div className="absolute right-0 top-full mt-1 z-50 w-72 rounded-lg border border-border bg-background shadow-lg">
+              <div className="absolute right-0 top-full mt-1.5 z-50 w-72 rounded-xl border border-border bg-background shadow-xl animate-in-scale">
                 <div className="flex items-center justify-between px-4 py-2.5 border-b border-border">
-                  <span className="text-sm font-medium">Notifications</span>
+                  <span className="text-sm font-semibold">Notifications</span>
                   {unread > 0 && (
                     <button onClick={markAllRead} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
                       Mark all read
