@@ -18,7 +18,7 @@ function isExpired(token: string): boolean {
   return Date.now() / 1000 > (payload.exp as number)
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const accessToken = request.cookies.get("access_token")?.value
   const isPublic = PUBLIC_PATHS.has(pathname)
@@ -89,7 +89,6 @@ export async function middleware(request: NextRequest) {
           })
           return response
         } else {
-          // Backend rejected token → force logout
           const res = NextResponse.redirect(new URL("/", request.url))
           res.cookies.delete("access_token")
           res.cookies.delete("refresh_token")
@@ -97,7 +96,7 @@ export async function middleware(request: NextRequest) {
           return res
         }
       } catch {
-        // Backend unreachable — let through, pages handle errors
+        // Backend unreachable — let through
       }
     }
 
