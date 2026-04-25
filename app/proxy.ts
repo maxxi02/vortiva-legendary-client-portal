@@ -2,7 +2,6 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 const PUBLIC_PATHS = new Set(["/", "/forgot-password", "/register", "/get-started"])
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"
 
 function decodeJWTPayload(token: string): Record<string, unknown> | null {
   try {
@@ -46,61 +45,24 @@ export async function proxy(request: NextRequest) {
     return clearSession(NextResponse.redirect(new URL("/", request.url)))
   }
 
-  // Read cached role
-  let role = ""
-  let userId = ""
-  const cached = request.cookies.get("user-info")?.value
-  if (cached) {
-    try {
-      const info = JSON.parse(cached)
-      role = info.role ?? ""
-      userId = info.id ?? ""
-    } catch { /* ignore */ }
-  }
+  // Decode role directly from JWT — no backend call needed
+  const payload = decodeJWTPayload(accessToken)
+  const role = (payload?.role as string) ?? ""
+  const userId = (payload?.sub as string) ?? ""
 
-  // No cache → fetch /me and cache it (fail open if backend unreachable)
-  if (!role) {
-    try {
-      const me = await fetch(`${BACKEND_URL}/api/v1/auth/me`, {
-        headers: { Cookie: `access_token=${accessToken}` },
-        cache: "no-store",
-      })
-      if (me.ok) {
-        const data = await me.json()
-        role = data.role ?? ""
-        userId = data.id ?? ""
-      } else if (me.status === 401) {
-        // Token explicitly rejected → logout
-        return clearSession(NextResponse.redirect(new URL("/", request.url)))
-      }
-      // Any other status (503 etc.) → fail open, let through
-    } catch { /* backend unreachable — fail open */ }
-  }
-
-  // Already logged in → skip public pages (but not if session=expired to avoid loop)
-  if (isPublic && role && !request.nextUrl.searchParams.has("session")) {
+  // Already logged in → skip public pages
+  if (isPublic && role) {
     const dest = role === "super_admin" ? "/portal/tenants" : "/portal/dashboard"
     return NextResponse.redirect(new URL(dest, request.url))
   }
 
-  // Forward role headers + cache for subsequent requests
+  // Forward role + pathname as headers for server components
   const requestHeaders = new Headers(request.headers)
   if (role) requestHeaders.set("x-user-role", role)
   if (userId) requestHeaders.set("x-user-id", userId)
+  requestHeaders.set("x-pathname", pathname)
 
-  const response = NextResponse.next({ request: { headers: requestHeaders } })
-
-  if (role && !cached) {
-    response.cookies.set("user-info", JSON.stringify({ role, id: userId }), {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 3600,
-    })
-  }
-
-  return response
+  return NextResponse.next({ request: { headers: requestHeaders } })
 }
 
 export const config = {
