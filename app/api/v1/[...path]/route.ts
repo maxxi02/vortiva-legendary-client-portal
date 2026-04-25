@@ -19,6 +19,10 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ path: s
   } as RequestInit)
 
   const resHeaders = new Headers(res.headers)
+  // Node's fetch already decompresses the body — remove encoding headers
+  // so the browser doesn't try to decompress again (ERR_CONTENT_DECODING_FAILED)
+  resHeaders.delete("content-encoding")
+  resHeaders.delete("transfer-encoding")
   // Forward Set-Cookie so auth cookies are set on the browser
   return new NextResponse(res.body, {
     status: res.status,
