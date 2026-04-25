@@ -130,7 +130,7 @@ export default function AnalyticsPage() {
                   tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                   tickLine={false}
                   axisLine={false}
-                  interval={range === "7d" ? 0 : range === "30d" ? 4 : 13}
+                  interval={Math.ceil((range.to.getTime() - range.from.getTime()) / 86400000) <= 7 ? 0 : Math.ceil((range.to.getTime() - range.from.getTime()) / 86400000) <= 30 ? 4 : 13}
                 />
                 <YAxis
                   tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
