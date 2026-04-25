@@ -23,8 +23,12 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ path: s
   // so the browser doesn't try to decompress again (ERR_CONTENT_DECODING_FAILED)
   resHeaders.delete("content-encoding")
   resHeaders.delete("transfer-encoding")
-  // Forward Set-Cookie so auth cookies are set on the browser
-  return new NextResponse(res.body, {
+
+  // Buffer the full body before returning — streaming res.body directly can
+  // result in truncated responses (unterminated JSON) in Vercel's edge runtime
+  const body = await res.arrayBuffer()
+
+  return new NextResponse(body, {
     status: res.status,
     headers: resHeaders,
   })
