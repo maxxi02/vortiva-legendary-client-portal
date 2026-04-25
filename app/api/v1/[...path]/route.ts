@@ -14,7 +14,6 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ path: s
     headers,
     body: ["GET", "HEAD"].includes(req.method) ? undefined : req.body,
     duplex: "half",
-    // @ts-expect-error — Node fetch supports this
     credentials: "include",
   } as RequestInit)
 
