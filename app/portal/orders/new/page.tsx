@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Plus, Minus, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { API } from "@/lib/api"
 
 type Table = { id: string; name: string; status: string; capacity: number }
 type MenuItem = { id: string; name: string; price: number; is_available: boolean; category_id: string | null }
@@ -22,8 +23,8 @@ export default function NewOrderPage() {
   useEffect(() => {
     const safe = (p: Promise<Response>) => p.then(r => r.ok ? r.json() : []).then(d => Array.isArray(d) ? d : []).catch(() => [])
     Promise.all([
-      safe(fetch("/api/v1/restaurant/tables", { credentials: "include" })),
-      safe(fetch("/api/v1/restaurant/menu/items", { credentials: "include" })),
+      safe(fetch(`${API}/api/v1/restaurant/tables`, { credentials: "include" })),
+      safe(fetch(`${API}/api/v1/restaurant/menu/items`, { credentials: "include" })),
     ]).then(([t, m]) => {
       setTables(t)
       setMenuItems(m)
@@ -64,7 +65,7 @@ export default function NewOrderPage() {
     if (cart.length === 0) { setError("Add at least one item."); return }
     setError("")
     setSubmitting(true)
-    const res = await fetch("/api/v1/restaurant/orders", {
+    const res = await fetch(`${API}/api/v1/restaurant/orders`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

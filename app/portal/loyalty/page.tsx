@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { Plus, X, Gift, Star, Search } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { API } from "@/lib/api"
 
 type Customer = {
   id: string
@@ -72,14 +73,14 @@ export default function LoyaltyPage() {
 
   async function load() {
     setLoading(true)
-    const res = await fetch("/api/v1/loyalty/customers", { credentials: "include" })
+    const res = await fetch(`${API}/api/v1/loyalty/customers`, { credentials: "include" })
     if (res.ok) setCustomers(await res.json())
     setLoading(false)
   }
 
   async function loadTransactions(customerId: string) {
     setTxLoading(true)
-    const res = await fetch(`/api/v1/loyalty/customers/${customerId}/transactions`, { credentials: "include" })
+    const res = await fetch(`${API}/api/v1/loyalty/customers/${customerId}/transactions`, { credentials: "include" })
     if (res.ok) setTransactions(await res.json())
     else setTransactions([])
     setTxLoading(false)
@@ -110,7 +111,7 @@ export default function LoyaltyPage() {
     }
     setPointsSaving(true)
     setPointsError("")
-    const res = await fetch(`/api/v1/loyalty/customers/${selected!.id}/points`, {
+    const res = await fetch(`${API}/api/v1/loyalty/customers/${selected!.id}/points`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

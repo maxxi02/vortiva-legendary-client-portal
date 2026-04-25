@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { Plus, UserCheck, UserX } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { API } from "@/lib/api"
 
 type Staff = {
   id: string
@@ -32,7 +33,7 @@ export default function TeamPage() {
   const [updatingId, setUpdatingId] = useState<string | null>(null)
 
   async function load() {
-    const data = await fetch("/api/v1/staff", { credentials: "include" })
+    const data = await fetch(`${API}/api/v1/staff`, { credentials: "include" })
       .then(r => r.ok ? r.json() : []).catch(() => [])
     setStaff(Array.isArray(data) ? data : [])
     setLoading(false)
@@ -42,7 +43,7 @@ export default function TeamPage() {
 
   async function toggleActive(s: Staff) {
     setUpdatingId(s.id)
-    const res = await fetch(`/api/v1/staff/${s.id}`, {
+    const res = await fetch(`${API}/api/v1/staff/${s.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -57,7 +58,7 @@ export default function TeamPage() {
 
   async function changeRole(s: Staff, role: string) {
     setUpdatingId(s.id)
-    const res = await fetch(`/api/v1/staff/${s.id}`, {
+    const res = await fetch(`${API}/api/v1/staff/${s.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -77,7 +78,7 @@ export default function TeamPage() {
     }
     setError("")
     setSaving(true)
-    const res = await fetch("/api/v1/staff/invite", {
+    const res = await fetch(`${API}/api/v1/staff/invite`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react"
 import { cn } from "@/lib/utils"
 import { usePusherChannel } from "@/hooks/usePusher"
+import { API } from "@/lib/api"
 
 type OrderItem = { id: string; name: string; quantity: number; notes?: string }
 type Order = { id: string; table_id: string | null; notes?: string; items: OrderItem[] }
@@ -61,7 +62,7 @@ export default function KDSPage() {
   const [, setTick] = useState(0)
 
   const load = useCallback(async () => {
-    const res = await fetch("/api/v1/restaurant/kds", { credentials: "include" })
+    const res = await fetch(`${API}/api/v1/restaurant/kds`, { credentials: "include" })
     if (res.ok) setTickets(await res.json())
   }, [])
 
@@ -79,7 +80,7 @@ export default function KDSPage() {
 
   async function bump(ticket: Ticket) {
     setBumping(ticket.id)
-    const res = await fetch(`/api/v1/restaurant/kds/${ticket.id}`, {
+    const res = await fetch(`${API}/api/v1/restaurant/kds/${ticket.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 import { Camera, Building2, User, Lock, Bell, Palette, CreditCard, Receipt, Monitor, ScrollText } from "lucide-react"
+import { API } from "@/lib/api"
 
 type Me = {
   id: string
@@ -118,7 +119,7 @@ export default function SettingsPage() {
   const [auditLoading, setAuditLoading] = useState(false)
 
   useEffect(() => {
-    fetch("/api/v1/auth/me", { credentials: "include" })
+    fetch(`${API}/api/v1/auth/me`, { credentials: "include" })
       .then(r => r.ok ? r.json() : null)
       .then((data: Me | null) => {
         if (!data) return
@@ -134,7 +135,7 @@ export default function SettingsPage() {
           })
         }
         if (data.role === "client_admin") {
-          fetch("/api/v1/billing/subscription", { credentials: "include" })
+          fetch(`${API}/api/v1/billing/subscription`, { credentials: "include" })
             .then(r => r.ok ? r.json() : null)
             .then(s => s && setSub(s))
             .catch(() => {})
@@ -154,7 +155,7 @@ export default function SettingsPage() {
   async function saveProfile() {
     setProfileSaving(true)
     setProfileMsg(null)
-    const res = await fetch("/api/v1/auth/me", {
+    const res = await fetch(`${API}/api/v1/auth/me`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -175,7 +176,7 @@ export default function SettingsPage() {
   async function saveBiz() {
     setBizSaving(true)
     setBizMsg(null)
-    const res = await fetch("/api/v1/tenant", {
+    const res = await fetch(`${API}/api/v1/tenant`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -191,41 +192,41 @@ export default function SettingsPage() {
 
   async function saveNotif() {
     setNotifSaving(true); setNotifMsg(null)
-    const res = await fetch("/api/v1/settings/notifications", { method: "PATCH", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(notif) })
+    const res = await fetch(`${API}/api/v1/settings/notifications`, { method: "PATCH", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(notif) })
     setNotifMsg(res.ok ? { ok: true, text: "Saved." } : { ok: false, text: "Failed to save." })
     setNotifSaving(false)
   }
 
   async function saveBrand() {
     setBrandSaving(true); setBrandMsg(null)
-    const res = await fetch("/api/v1/settings/branding", { method: "PATCH", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(brand) })
+    const res = await fetch(`${API}/api/v1/settings/branding`, { method: "PATCH", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(brand) })
     setBrandMsg(res.ok ? { ok: true, text: "Saved." } : { ok: false, text: "Failed to save." })
     setBrandSaving(false)
   }
 
   async function savePayments() {
     setPaymentsSaving(true); setPaymentsMsg(null)
-    const res = await fetch("/api/v1/settings/payments", { method: "PATCH", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(payments) })
+    const res = await fetch(`${API}/api/v1/settings/payments`, { method: "PATCH", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(payments) })
     setPaymentsMsg(res.ok ? { ok: true, text: "Saved." } : { ok: false, text: "Failed to save." })
     setPaymentsSaving(false)
   }
 
   async function saveTax() {
     setTaxSaving(true); setTaxMsg(null)
-    const res = await fetch("/api/v1/settings/tax", { method: "PATCH", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify({ vat_enabled: tax.vat_enabled, vat_rate: Number(tax.vat_rate), service_charge_enabled: tax.service_charge_enabled, service_charge_rate: Number(tax.service_charge_rate) }) })
+    const res = await fetch(`${API}/api/v1/settings/tax`, { method: "PATCH", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify({ vat_enabled: tax.vat_enabled, vat_rate: Number(tax.vat_rate), service_charge_enabled: tax.service_charge_enabled, service_charge_rate: Number(tax.service_charge_rate) }) })
     setTaxMsg(res.ok ? { ok: true, text: "Saved." } : { ok: false, text: "Failed to save." })
     setTaxSaving(false)
   }
 
   function loadDevices() {
     setDevicesLoading(true)
-    fetch("/api/v1/settings/devices", { credentials: "include" })
+    fetch(`${API}/api/v1/settings/devices`, { credentials: "include" })
       .then(r => r.ok ? r.json() : []).then(d => { setDevices(d); setDevicesLoading(false) }).catch(() => setDevicesLoading(false))
   }
 
   function loadAudit() {
     setAuditLoading(true)
-    fetch("/api/v1/settings/audit", { credentials: "include" })
+    fetch(`${API}/api/v1/settings/audit`, { credentials: "include" })
       .then(r => r.ok ? r.json() : []).then(d => { setAudit(d); setAuditLoading(false) }).catch(() => setAuditLoading(false))
   }
 
@@ -245,7 +246,7 @@ export default function SettingsPage() {
     if (pw.next.length < 8) { setPwMsg({ ok: false, text: "Password must be at least 8 characters." }); return }
     setPwSaving(true)
     setPwMsg(null)
-    const res = await fetch("/api/v1/auth/me/password", {
+    const res = await fetch(`${API}/api/v1/auth/me/password`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

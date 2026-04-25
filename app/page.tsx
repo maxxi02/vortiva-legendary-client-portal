@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { API } from "@/lib/api"
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -19,7 +20,7 @@ export default function LoginPage() {
     setError("")
     setLoading(true)
     try {
-      const res = await fetch("/api/v1/auth/login/cookie", {
+      const res = await fetch(`${API}/api/v1/auth/login/cookie`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -32,7 +33,7 @@ export default function LoginPage() {
       }
       const data = await res.json().catch(() => ({}))
       // Login response doesn't include role — fetch /me to get it
-      const meRes = await fetch("/api/v1/auth/me", { credentials: "include" })
+      const meRes = await fetch(`${API}/api/v1/auth/me`, { credentials: "include" })
       const me = meRes.ok ? await meRes.json().catch(() => ({})) : {}
       const role = me?.role ?? data?.role ?? ""
       // Cache role in cookie so proxy doesn't need to fetch /me on first portal request

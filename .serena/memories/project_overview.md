@@ -19,6 +19,10 @@ Restaurant Management Portal (F&B ERP) — unified, role-gated web app for three
 - Frontend connects via API proxy at `/api/v1/*`
 - No additional backend dependencies needed
 
+## Next.js 16 Notes
+- Middleware file is `proxy.ts` (NOT `middleware.ts` — that convention is deprecated in Next.js 16)
+- Export function must be named `proxy`, config export is `config`
+
 ## Path alias
 @/* maps to ./* (project root)
 

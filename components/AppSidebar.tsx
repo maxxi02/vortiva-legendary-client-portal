@@ -32,6 +32,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { navConfig, type UserRole } from "@/config/nav";
+import { API } from "@/lib/api"
 
 const ICONS: Record<string, React.ElementType> = {
   LayoutDashboard,
@@ -75,7 +76,7 @@ export function AppSidebar({
   const [tenantName, setTenantName] = React.useState("Vortiva");
 
   React.useEffect(() => {
-    fetch(`/api/v1/auth/me`, { credentials: "include" })
+    fetch(`${API}/api/v1/auth/me`, { credentials: "include" })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         if (!d) return;
@@ -97,7 +98,7 @@ export function AppSidebar({
     setLoggingOut(true);
     const controller = new AbortController();
     const t = setTimeout(() => controller.abort(), 3000);
-    await fetch(`/api/v1/auth/logout/cookie`, {
+    await fetch(`${API}/api/v1/auth/logout/cookie`, {
       method: "POST",
       credentials: "include",
       signal: controller.signal,

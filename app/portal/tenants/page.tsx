@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
 import { Building2, X } from "lucide-react"
 import { BUSINESS_TYPE_MAP, STATUS_STYLES } from "@/config/business-types"
+import { API } from "@/lib/api"
 
 function BizTypeBadge({ value }: { value?: string }) {
   if (!value) return <span className="text-muted-foreground">—</span>
@@ -85,7 +86,7 @@ export default function TenantsPage() {
   const [detailTab, setDetailTab] = useState<DetailTab>("info")
 
   useEffect(() => {
-    fetch("/api/v1/tenants", { credentials: "include" })
+    fetch(`${API}/api/v1/tenants`, { credentials: "include" })
       .then(r => r.ok ? r.json() : [])
       .catch(() => [])
       .then((data: Tenant[]) => { setTenants(data); setLoading(false) })

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { usePusherChannel } from "@/hooks/usePusher"
+import { API } from "@/lib/api"
 
 type TenantStats = {
   today_sales: number
@@ -86,9 +87,9 @@ export default function DashboardPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch("/api/v1/tenant/dashboard/stats", { credentials: "include" })
+      fetch(`${API}/api/v1/tenant/dashboard/stats`, { credentials: "include" })
         .then(r => r.ok ? r.json() : null),
-      fetch("/api/v1/restaurant/orders", { credentials: "include" })
+      fetch(`${API}/api/v1/restaurant/orders`, { credentials: "include" })
         .then(r => r.ok ? r.json() : []),
     ])
       .then(([s, o]) => { setStats(s); setOrders(o ?? []) })
@@ -100,11 +101,11 @@ export default function DashboardPage() {
 
   // Real-time: refresh orders and stats when a new order event fires
   usePusherChannel("orders", "order.created", () => {
-    fetch("/api/v1/restaurant/orders", { credentials: "include" })
+    fetch(`${API}/api/v1/restaurant/orders`, { credentials: "include" })
       .then(r => r.ok ? r.json() : []).then(setOrders).catch(() => {})
   })
   usePusherChannel("orders", "order.updated", () => {
-    fetch("/api/v1/restaurant/orders", { credentials: "include" })
+    fetch(`${API}/api/v1/restaurant/orders`, { credentials: "include" })
       .then(r => r.ok ? r.json() : []).then(setOrders).catch(() => {})
   })
 

@@ -7,6 +7,7 @@ import {
 } from "recharts"
 import { cn } from "@/lib/utils"
 import { DateRangePicker, type DateRange } from "@/components/portal/DateRangePicker"
+import { API } from "@/lib/api"
 
 type Order = {
   id: string
@@ -31,7 +32,7 @@ export default function AnalyticsPage() {
   const [range, setRange] = useState<DateRange>({ from: defaultFrom, to: today })
 
   useEffect(() => {
-    fetch("/api/v1/restaurant/orders", { credentials: "include" })
+    fetch(`${API}/api/v1/restaurant/orders`, { credentials: "include" })
       .then(r => r.ok ? r.json() : [])
       .then(data => { setOrders(data); setLoading(false) })
   }, [])

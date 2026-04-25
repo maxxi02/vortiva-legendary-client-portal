@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Plus, X } from "lucide-react"
 import { StatusBadge } from "@/components/portal/StatusBadge"
 import { cn } from "@/lib/utils"
+import { API } from "@/lib/api"
 
 type OrderItem = {
   id: string
@@ -36,7 +37,7 @@ export default function OrdersPage() {
 
   async function load() {
     setLoading(true)
-    const res = await fetch("/api/v1/restaurant/orders", { credentials: "include" })
+    const res = await fetch(`${API}/api/v1/restaurant/orders`, { credentials: "include" })
     if (res.ok) setOrders(await res.json())
     setLoading(false)
   }
@@ -47,7 +48,7 @@ export default function OrdersPage() {
 
   async function updateStatus(orderId: string, status: string) {
     setUpdating(true)
-    const res = await fetch(`/api/v1/restaurant/orders/${orderId}`, {
+    const res = await fetch(`${API}/api/v1/restaurant/orders/${orderId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

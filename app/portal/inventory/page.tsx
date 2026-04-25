@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { Plus, Package, AlertTriangle } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { API } from "@/lib/api"
 
 type Category = { id: string; name: string }
 type Product = {
@@ -38,8 +39,8 @@ export default function InventoryPage() {
 
   async function load() {
     const [p, c] = await Promise.all([
-      fetch("/api/v1/inventory/products", { credentials: "include" }).then(r => r.ok ? r.json() : []),
-      fetch("/api/v1/inventory/categories", { credentials: "include" }).then(r => r.ok ? r.json() : []),
+      fetch(`${API}/api/v1/inventory/products`, { credentials: "include" }).then(r => r.ok ? r.json() : []),
+      fetch(`${API}/api/v1/inventory/categories`, { credentials: "include" }).then(r => r.ok ? r.json() : []),
     ])
     setProducts(p)
     setCategories(c)
@@ -59,7 +60,7 @@ export default function InventoryPage() {
     if (!restocking || !restockQty) return
     setRestockSaving(true)
     const newQty = (restocking.stock_qty) + parseInt(restockQty)
-    const res = await fetch(`/api/v1/inventory/products/${restocking.id}`, {
+    const res = await fetch(`${API}/api/v1/inventory/products/${restocking.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -78,7 +79,7 @@ export default function InventoryPage() {
     if (!form.name || !form.price) { setError("Name and price are required."); return }
     setError("")
     setSaving(true)
-    const res = await fetch("/api/v1/inventory/products", {
+    const res = await fetch(`${API}/api/v1/inventory/products`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

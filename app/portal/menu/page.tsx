@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react"
 import { Plus, Trash2, Pencil, X, Check, QrCode } from "lucide-react"
 import { cn } from "@/lib/utils"
 import QRCodeLib from "qrcode"
+import { API } from "@/lib/api"
 
 type Category = { id: string; name: string; sort_order: number }
 type MenuItem = {
@@ -48,8 +49,8 @@ export default function MenuPage() {
 
   async function load() {
     const [c, m] = await Promise.all([
-      fetch("/api/v1/restaurant/menu/categories", { credentials: "include" }).then(r => r.ok ? r.json() : []),
-      fetch("/api/v1/restaurant/menu/items", { credentials: "include" }).then(r => r.ok ? r.json() : []),
+      fetch(`${API}/api/v1/restaurant/menu/categories`, { credentials: "include" }).then(r => r.ok ? r.json() : []),
+      fetch(`${API}/api/v1/restaurant/menu/items`, { credentials: "include" }).then(r => r.ok ? r.json() : []),
     ])
     setCategories(c)
     setItems(m)
@@ -61,7 +62,7 @@ export default function MenuPage() {
   async function addCategory() {
     if (!newCatName.trim()) return
     setAddingCat(true)
-    const res = await fetch("/api/v1/restaurant/menu/categories", {
+    const res = await fetch(`${API}/api/v1/restaurant/menu/categories`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -77,13 +78,13 @@ export default function MenuPage() {
 
   async function deleteCategory(id: string) {
     if (!confirm("Delete this category? Items will be uncategorised.")) return
-    const res = await fetch(`/api/v1/restaurant/menu/categories/${id}`, { method: "DELETE", credentials: "include" })
+    const res = await fetch(`${API}/api/v1/restaurant/menu/categories/${id}`, { method: "DELETE", credentials: "include" })
     if (res.ok) setCategories(prev => prev.filter(c => c.id !== id))
   }
 
   async function toggleAvailability(item: MenuItem) {
     setTogglingId(item.id)
-    const res = await fetch(`/api/v1/restaurant/menu/items/${item.id}`, {
+    const res = await fetch(`${API}/api/v1/restaurant/menu/items/${item.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -128,7 +129,7 @@ export default function MenuPage() {
 
   async function deleteItem(id: string) {
     if (!confirm("Delete this item?")) return
-    const res = await fetch(`/api/v1/restaurant/menu/items/${id}`, { method: "DELETE", credentials: "include" })
+    const res = await fetch(`${API}/api/v1/restaurant/menu/items/${id}`, { method: "DELETE", credentials: "include" })
     if (res.ok) setItems(prev => prev.filter(i => i.id !== id))
   }
 

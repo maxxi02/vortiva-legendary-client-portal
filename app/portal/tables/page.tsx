@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
+import { API } from "@/lib/api"
 
 type Table = {
   id: string
@@ -26,7 +27,7 @@ export default function TablesPage() {
   const [updating, setUpdating] = useState(false)
 
   async function load() {
-    const res = await fetch("/api/v1/restaurant/tables", { credentials: "include" })
+    const res = await fetch(`${API}/api/v1/restaurant/tables`, { credentials: "include" })
     if (res.ok) setTables(await res.json())
     setLoading(false)
   }
@@ -39,7 +40,7 @@ export default function TablesPage() {
 
   async function updateStatus(tableId: string, status: string) {
     setUpdating(true)
-    const res = await fetch(`/api/v1/restaurant/tables/${tableId}`, {
+    const res = await fetch(`${API}/api/v1/restaurant/tables/${tableId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

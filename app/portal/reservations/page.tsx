@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Plus, X, CalendarDays, Clock, Users } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { StatusBadge } from "@/components/portal/StatusBadge"
+import { API } from "@/lib/api"
 
 type Reservation = {
   id: string
@@ -76,7 +77,7 @@ export default function ReservationsPage() {
 
   async function load() {
     setLoading(true)
-    const res = await fetch("/api/v1/restaurant/reservations", { credentials: "include" })
+    const res = await fetch(`${API}/api/v1/restaurant/reservations`, { credentials: "include" })
     if (res.ok) setReservations(await res.json())
     setLoading(false)
   }
@@ -135,7 +136,7 @@ export default function ReservationsPage() {
 
   async function updateStatus(id: string, status: string) {
     setUpdating(true)
-    const res = await fetch(`/api/v1/restaurant/reservations/${id}`, {
+    const res = await fetch(`${API}/api/v1/restaurant/reservations/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

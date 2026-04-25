@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { Bell, ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { API } from "@/lib/api"
 
 type Branch = { id: string; name: string }
 type Notification = { id: string; message: string; read: boolean; created_at: string }
@@ -32,13 +33,13 @@ export function DashboardHeader() {
   const [notifOpen, setNotifOpen] = useState(false)
 
   useEffect(() => {
-    fetch("/api/v1/auth/me", { credentials: "include" })
+    fetch(`${API}/api/v1/auth/me`, { credentials: "include" })
       .then(r => r.ok ? r.json() : null)
       .then(data => {
         if (!data) return
         setRole(data.role)
         if (data.role === "client_admin") {
-          fetch("/api/v1/branches", { credentials: "include" })
+          fetch(`${API}/api/v1/branches`, { credentials: "include" })
             .then(r => r.ok ? r.json() : [])
             .then((bs: Branch[]) => {
               setBranches(bs)
@@ -46,7 +47,7 @@ export function DashboardHeader() {
             })
             .catch(() => {})
         }
-        fetch("/api/v1/notifications", { credentials: "include" })
+        fetch(`${API}/api/v1/notifications`, { credentials: "include" })
           .then(r => r.ok ? r.json() : [])
           .then(setNotifications)
           .catch(() => {})
@@ -56,7 +57,7 @@ export function DashboardHeader() {
   const unread = notifications.filter(n => !n.read).length
 
   function markAllRead() {
-    fetch("/api/v1/notifications/read-all", { method: "POST", credentials: "include" }).catch(() => {})
+    fetch(`${API}/api/v1/notifications/read-all`, { method: "POST", credentials: "include" }).catch(() => {})
     setNotifications(prev => prev.map(n => ({ ...n, read: true })))
   }
 
