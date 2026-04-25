@@ -24,7 +24,7 @@ function clearSession(response: NextResponse) {
   return response
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const isPublic = PUBLIC_PATHS.has(pathname)
   const isPortal = pathname.startsWith("/portal")
