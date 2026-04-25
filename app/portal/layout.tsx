@@ -37,7 +37,7 @@ export default async function PortalLayout({
   const accessToken = cookieStore.get("access_token")?.value
   if (accessToken) {
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000"
+      const backendUrl = process.env.API_URL ?? "http://localhost:8000"
       const me = await fetch(`${backendUrl}/api/v1/auth/me`, {
         headers: { Cookie: `access_token=${accessToken}` },
         cache: "no-store",
