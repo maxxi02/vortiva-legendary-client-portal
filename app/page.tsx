@@ -36,11 +36,13 @@ export default function LoginPage() {
       const meRes = await fetch(`${API}/api/v1/auth/me`, { credentials: "include" })
       const me = meRes.ok ? await meRes.json().catch(() => ({})) : {}
       const role = me?.role ?? data?.role ?? ""
-      // Cache role in cookie so proxy doesn't need to fetch /me on first portal request
       if (role) {
         document.cookie = `user-info=${encodeURIComponent(JSON.stringify({ role, id: me?.id ?? "" }))}; path=/; max-age=3600; samesite=lax`
       }
-      window.location.href = role === "super_admin" ? "/portal/tenants" : "/portal/dashboard"
+      const params = new URLSearchParams(window.location.search)
+      const callbackUrl = params.get("callbackUrl")
+      const defaultDest = role === "super_admin" ? "/portal/tenants" : "/portal/dashboard"
+      window.location.href = callbackUrl ?? defaultDest
     } catch {
       setError("Unable to connect. Please try again.")
     } finally {
