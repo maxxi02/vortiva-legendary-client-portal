@@ -68,7 +68,8 @@ export default function MenuPage() {
       body: JSON.stringify({ name: newCatName.trim(), sort_order: categories.length }),
     })
     if (res.ok) {
-      setCategories(prev => [...prev, await res.json()])
+      const newCat = await res.json()
+      setCategories(prev => [...prev, newCat])
       setNewCatName("")
     }
     setAddingCat(false)
