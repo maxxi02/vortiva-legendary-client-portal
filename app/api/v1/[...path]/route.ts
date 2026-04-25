@@ -18,15 +18,14 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ path: s
     redirect: "follow",
   } as RequestInit)
 
+  const body = await res.arrayBuffer()
+
   const resHeaders = new Headers(res.headers)
-  // Node's fetch already decompresses the body — remove encoding headers
-  // so the browser doesn't try to decompress again (ERR_CONTENT_DECODING_FAILED)
   resHeaders.delete("content-encoding")
   resHeaders.delete("transfer-encoding")
-
-  // Buffer the full body before returning — streaming res.body directly can
-  // result in truncated responses (unterminated JSON) in Vercel's edge runtime
-  const body = await res.arrayBuffer()
+  // content-length reflects the compressed size; after decompression it's wrong
+  // — let the runtime set the correct value from the buffered body
+  resHeaders.delete("content-length")
 
   return new NextResponse(body, {
     status: res.status,
