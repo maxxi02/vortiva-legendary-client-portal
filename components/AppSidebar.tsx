@@ -241,9 +241,6 @@ export function AppSidebar({
                 disabled={loggingOut}
                 className="flex-1 rounded-lg bg-destructive px-3 py-2 text-sm font-medium text-destructive-foreground hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                {loggingOut && (
-                  <span className="size-3.5 rounded-full border-2 border-destructive-foreground/40 border-t-destructive-foreground animate-spin" />
-                )}
                 {loggingOut ? "Logging out…" : "Log out"}
               </button>
             </div>
