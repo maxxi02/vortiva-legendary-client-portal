@@ -54,7 +54,13 @@ export function AppSidebar({ role, ...props }: Props & React.ComponentProps<type
 
   async function handleLogout() {
     setLoggingOut(true)
-    await fetch("/api/v1/auth/logout/cookie", { method: "POST", credentials: "include" }).catch(() => {})
+    const controller = new AbortController()
+    const t = setTimeout(() => controller.abort(), 3000)
+    await fetch("/api/v1/auth/logout/cookie", {
+      method: "POST",
+      credentials: "include",
+      signal: controller.signal,
+    }).catch(() => {}).finally(() => clearTimeout(t))
     router.push("/")
   }
 
