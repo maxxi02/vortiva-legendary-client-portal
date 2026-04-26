@@ -4,6 +4,9 @@ import { useEffect, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 import { Camera, Building2, User, Lock, Bell, Palette, CreditCard, Receipt, Monitor, ScrollText } from "lucide-react"
 import { API } from "@/lib/api"
+import { cachedFetch, cacheInvalidate } from "@/lib/cache"
+
+const ME_TTL = 5 * 60 * 1000
 
 type Me = {
   id: string
@@ -119,9 +122,8 @@ export default function SettingsPage() {
   const [auditLoading, setAuditLoading] = useState(false)
 
   useEffect(() => {
-    fetch(`${API}/api/v1/auth/me`, { credentials: "include" })
-      .then(r => r.ok ? r.json() : null)
-      .then((data: Me | null) => {
+    cachedFetch<Me>(`${API}/api/v1/auth/me`, ME_TTL, { credentials: "include" })
+      .then((data: Me) => {
         if (!data) return
         setMe(data)
         setProfile({ full_name: data.full_name, phone: data.phone ?? "", avatar_url: data.avatar_url ?? "" })
@@ -165,6 +167,7 @@ export default function SettingsPage() {
       const updated = await res.json()
       setMe(updated)
       setProfileMsg({ ok: true, text: "Profile updated." })
+      cacheInvalidate("auth/me")
     } else {
       setProfileMsg({ ok: false, text: "Failed to update profile." })
     }

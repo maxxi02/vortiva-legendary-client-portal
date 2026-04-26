@@ -3,6 +3,7 @@ import { Geist_Mono, Newsreader, Plus_Jakarta_Sans, Merriweather } from "next/fo
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import QueryProvider from "@/providers/QueryProvider";
 
 const merriweather = Merriweather({ subsets: ["latin"], variable: "--font-serif" });
 
@@ -50,7 +51,9 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        <TooltipProvider>{children}</TooltipProvider>
+        <QueryProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+        </QueryProvider>
       </body>
     </html>
   );

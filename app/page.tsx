@@ -37,7 +37,8 @@ export default function LoginPage() {
       const me = meRes.ok ? await meRes.json().catch(() => ({})) : {}
       const role = me?.role ?? data?.role ?? ""
       if (role) {
-        document.cookie = `user-info=${encodeURIComponent(JSON.stringify({ role, id: me?.id ?? "" }))}; path=/; max-age=3600; samesite=lax`
+        const businessType = me?.tenant?.business_type ?? ""
+        document.cookie = `user-info=${encodeURIComponent(JSON.stringify({ role, id: me?.id ?? "", businessType }))}; path=/; max-age=3600; samesite=lax`
       }
       const params = new URLSearchParams(window.location.search)
       const callbackUrl = params.get("callbackUrl")
