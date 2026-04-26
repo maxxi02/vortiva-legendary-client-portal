@@ -199,9 +199,6 @@ export default function DashboardPage() {
   const today = useMemo(() => new Date().toLocaleDateString("en-US", {
     weekday: "long", year: "numeric", month: "long", day: "numeric",
   }), []);
-  const today = useMemo(() => new Date().toLocaleDateString("en-US", {
-    weekday: "long", year: "numeric", month: "long", day: "numeric",
-  }), []);
   const [businessType, setBusinessType] = useState("");
   const [fnbStats, setFnbStats] = useState<FnbStats | null>(null);
   const [gymStats, setGymStats] = useState<GymStats | null>(null);
