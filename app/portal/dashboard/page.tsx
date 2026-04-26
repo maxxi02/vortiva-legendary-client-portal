@@ -199,7 +199,10 @@ export default function DashboardPage() {
   const today = useMemo(() => new Date().toLocaleDateString("en-US", {
     weekday: "long", year: "numeric", month: "long", day: "numeric",
   }), []);
-  const businessType = useMemo(() => resolveBusinessType(), []);
+  const today = useMemo(() => new Date().toLocaleDateString("en-US", {
+    weekday: "long", year: "numeric", month: "long", day: "numeric",
+  }), []);
+  const [businessType, setBusinessType] = useState("");
   const [fnbStats, setFnbStats] = useState<FnbStats | null>(null);
   const [gymStats, setGymStats] = useState<GymStats | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -209,7 +212,10 @@ export default function DashboardPage() {
 
   // ── Init ─────────────────────────────────────────────────────────────────────
   useEffect(() => {
-    if (businessType === "gym") {
+    const bt = resolveBusinessType();
+    setBusinessType(bt);
+
+    if (bt === "gym") {
       Promise.all([
         fetch(`${API}/api/v1/gym/dashboard/stats`, {
           credentials: "include",
